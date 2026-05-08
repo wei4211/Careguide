@@ -10,7 +10,7 @@ CareGuide 是一套面向家屬與照顧者的 **高齡照護需求評估網站*
 
 > ⚠️ 本系統僅提供初步照護需求評估，不取代正式長照評估或醫療診斷。
 
-🔗 **線上展示**：[careguide-3ktf.onrender.com](https://careguide-3ktf.onrender.com)
+🔗 **線上展示**：[careguide-1gc1.onrender.com](https://careguide-1gc1.onrender.com)
 
 > 免費方案閒置 15 分鐘會睡眠，首次訪問請等約 30 秒喚醒；
 > 評估資料可能因服務重啟被清空，僅供示範體驗。
