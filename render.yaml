@@ -1,0 +1,14 @@
+# Render 部署設定（Docker 模式）
+# 切回 native runtime → 改回 render.native.yaml 的內容
+services:
+  - type: web
+    name: careguide
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: FLASK_SECRET_KEY
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false

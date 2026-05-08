@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}個案摘要報告｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="py-4 bg-light">
+  <div class="container">
+    <p class="text-muted small mb-1">CareGuide 個案報告 #{{ record.id }}</p>
+    <h2 class="fw-bold mb-0">個案照護需求摘要報告</h2>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+      <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('result', assessment_id=record.id) }}">回評估結果</a>
+      <div class="d-flex gap-2">
+        <button id="copyBtn" class="btn btn-outline-primary btn-sm">複製報告</button>
+        <a class="btn btn-primary btn-sm"
+           href="{{ url_for('report_pdf', assessment_id=record.id) }}"
+           download>下載 PDF</a>
+        <button id="printBtn" class="btn btn-outline-secondary btn-sm" onclick="window.print()">列印</button>
+      </div>
+    </div>
+
+    <div class="panel p-4 report-panel">
+      <pre id="reportText" class="report-text">{{ report_text }}</pre>
+    </div>
+
+    <p class="text-muted small mt-3 mb-0">
+      ※ 本報告為系統根據填寫資料產生之初步參考內容，請勿作為正式長照資格判定或醫療診斷依據。
+    </p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const text = document.getElementById('reportText').innerText;
+    try {
+      await navigator.clipboard.writeText(text);
+      const btn = document.getElementById('copyBtn');
+      const original = btn.textContent;
+      btn.textContent = '已複製';
+      setTimeout(() => { btn.textContent = original; }, 1500);
+    } catch (e) {
+      alert('複製失敗，請手動選取文字');
+    }
+  });
+</script>
+{% endblock %}

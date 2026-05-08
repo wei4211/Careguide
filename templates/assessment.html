@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block title %}照護需求評估問卷｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="py-4 bg-light">
+  <div class="container d-flex justify-content-between align-items-end flex-wrap gap-2">
+    <div>
+      <h2 class="fw-bold mb-1">照護需求評估問卷</h2>
+      <p class="text-muted mb-0">請依照長者目前實際情況填寫，全部欄位約 5 分鐘可完成。</p>
+    </div>
+    <span id="draftStatus" class="draft-status">草稿已自動儲存</span>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <form id="assessmentForm" method="post" action="{{ url_for('evaluate_route') }}" class="assessment-form">
+
+      <!-- 步驟指示 -->
+      <div class="step-indicator mb-4">
+        <div class="step active" data-step="1">基本資料</div>
+        <div class="step" data-step="2">日常生活</div>
+        <div class="step" data-step="3">獨立生活</div>
+        <div class="step" data-step="4">健康安全</div>
+        <div class="step" data-step="5">家庭支持</div>
+        <div class="step" data-step="6">照顧者壓力</div>
+        <div class="step" data-step="7">補充描述</div>
+      </div>
+
+      <!-- A. 基本資料 -->
+      <fieldset class="form-section" data-step="1">
+        <h4 class="form-section-title">A. 基本資料</h4>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">長者年齡</label>
+            <input type="number" name="age" class="form-control" min="0" max="120" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">性別</label>
+            <select name="gender" class="form-select" required>
+              <option value="">請選擇</option>
+              <option value="男">男</option>
+              <option value="女">女</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">居住狀況</label>
+            <select name="living_status" class="form-select" required>
+              <option value="">請選擇</option>
+              <option value="with_family">與家人同住</option>
+              <option value="alone_daytime">白天常獨處</option>
+              <option value="alone">獨居</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">主要照顧者</label>
+            <select name="caregiver" class="form-select" required>
+              <option value="">請選擇</option>
+              <option value="stable">有穩定照顧者(配偶/子女/外籍看護)</option>
+              <option value="partial">部分時間可照顧</option>
+              <option value="none">無穩定照顧者</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">是否已使用長照服務</label>
+            <select name="using_ltc" class="form-select">
+              <option value="unknown">不確定</option>
+              <option value="yes">是</option>
+              <option value="no">否</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- B. ADL -->
+      <fieldset class="form-section d-none" data-step="2">
+        <h4 class="form-section-title">B. 日常生活能力（ADL）</h4>
+        <p class="text-muted small">請評估長者是否需要他人協助。</p>
+
+        {% set adl_items = [
+          ('bathing',   '洗澡'),
+          ('dressing',  '穿衣'),
+          ('eating',    '吃飯'),
+          ('toileting', '如廁'),
+          ('transfer',  '上下床/起身/移位'),
+        ] %}
+        {% for name, label in adl_items %}
+        <div class="form-row-q">
+          <div class="form-row-label">{{ label }}</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="{{ name }}" value="none" checked> 不需要協助</label>
+            <label><input type="radio" name="{{ name }}" value="sometimes"> 偶爾需要</label>
+            <label><input type="radio" name="{{ name }}" value="often"> 經常需要</label>
+          </div>
+        </div>
+        {% endfor %}
+
+        <div class="form-row-q">
+          <div class="form-row-label">行走能力</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="mobility" value="independent" checked> 可自行行走</label>
+            <label><input type="radio" name="mobility" value="aid"> 需輔具</label>
+            <label><input type="radio" name="mobility" value="assisted"> 需他人攙扶</label>
+            <label><input type="radio" name="mobility" value="unable"> 幾乎無法行走</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- C. IADL -->
+      <fieldset class="form-section d-none" data-step="3">
+        <h4 class="form-section-title">C. 工具性日常生活能力（IADL）</h4>
+        <p class="text-muted small">請評估長者是否能獨立完成。</p>
+
+        {% set iadl_items = [
+          ('meal',       '自行準備餐食'),
+          ('shopping',   '自行購物'),
+          ('transport',  '自行外出或搭乘交通工具'),
+          ('medication', '自行管理藥物'),
+          ('housework',  '處理簡單家務'),
+        ] %}
+        {% for name, label in iadl_items %}
+        <div class="form-row-q">
+          <div class="form-row-label">{{ label }}</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="{{ name }}" value="independent" checked> 可以</label>
+            <label><input type="radio" name="{{ name }}" value="partial"> 需要部分協助</label>
+            <label><input type="radio" name="{{ name }}" value="unable"> 無法自行完成</label>
+          </div>
+        </div>
+        {% endfor %}
+      </fieldset>
+
+      <!-- D. 健康與安全 -->
+      <fieldset class="form-section d-none" data-step="4">
+        <h4 class="form-section-title">D. 健康與安全狀況</h4>
+
+        <div class="form-row-q">
+          <div class="form-row-label">半年內是否曾跌倒</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="fall_history" value="none" checked> 無</label>
+            <label><input type="radio" name="fall_history" value="once"> 1 次</label>
+            <label><input type="radio" name="fall_history" value="multiple"> 2 次以上</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">慢性病情形</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="chronic" value="none" checked> 無</label>
+            <label><input type="radio" name="chronic" value="one"> 有一項</label>
+            <label><input type="radio" name="chronic" value="multiple"> 有多項</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">記憶或認知退化</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="cognitive" value="none" checked> 無</label>
+            <label><input type="radio" name="cognitive" value="mild"> 輕微</label>
+            <label><input type="radio" name="cognitive" value="obvious"> 明顯</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">近期是否常就醫或住院</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="hospital" value="none" checked> 無</label>
+            <label><input type="radio" name="hospital" value="yes"> 有</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- E. 家庭照顧支持 -->
+      <fieldset class="form-section d-none" data-step="5">
+        <h4 class="form-section-title">E. 家庭照顧支持</h4>
+
+        <div class="form-row-q">
+          <div class="form-row-label">家人支援是否充足</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="family_support" value="sufficient" checked> 充足</label>
+            <label><input type="radio" name="family_support" value="moderate"> 普通</label>
+            <label><input type="radio" name="family_support" value="insufficient"> 不足</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">緊急狀況時是否有人可協助</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="emergency" value="yes" checked> 有</label>
+            <label><input type="radio" name="emergency" value="uncertain"> 不一定</label>
+            <label><input type="radio" name="emergency" value="no"> 沒有</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- F. 照顧者壓力 -->
+      <fieldset class="form-section d-none" data-step="6">
+        <h4 class="form-section-title">F. 照顧者壓力</h4>
+
+        <div class="form-row-q">
+          <div class="form-row-label">主要照顧者壓力</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="caregiver_pressure" value="low" checked> 低</label>
+            <label><input type="radio" name="caregiver_pressure" value="medium"> 中</label>
+            <label><input type="radio" name="caregiver_pressure" value="high"> 高</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">主要照顧者健康狀況</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="caregiver_health" value="good" checked> 良好</label>
+            <label><input type="radio" name="caregiver_health" value="fair"> 普通</label>
+            <label><input type="radio" name="caregiver_health" value="poor"> 不佳</label>
+          </div>
+        </div>
+
+        <div class="form-row-q">
+          <div class="form-row-label">是否可能需要喘息服務</div>
+          <div class="form-row-options">
+            <label><input type="radio" name="respite" value="none" checked> 不需要</label>
+            <label><input type="radio" name="respite" value="maybe"> 可能需要</label>
+            <label><input type="radio" name="respite" value="needed"> 明顯需要</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- G. 自由描述 -->
+      <fieldset class="form-section d-none" data-step="7">
+        <h4 class="form-section-title">G. 補充描述（選填）</h4>
+        <p class="text-muted small">用一段話描述目前主要的照護困難或想要了解的方向，會讓 AI 建議更貼近實際情況。</p>
+        <textarea name="description" rows="6" class="form-control"
+                  placeholder="例如：阿嬤最近走路不穩，白天常常一個人在家，家人擔心她跌倒。"></textarea>
+      </fieldset>
+
+      <!-- 控制按鈕 -->
+      <div class="form-controls mt-4 d-flex justify-content-between">
+        <button type="button" id="prevBtn" class="btn btn-outline-secondary" disabled>上一步</button>
+        <div>
+          <button type="button" id="nextBtn" class="btn btn-primary">下一步</button>
+          <button type="submit" id="submitBtn" class="btn btn-success d-none">送出評估</button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/assessment.js') }}"></script>
+{% endblock %}

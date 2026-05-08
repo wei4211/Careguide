@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}CareGuide：高齡照護需求評估與建議系統{% endblock %}
+
+{% block content %}
+<section class="hero py-5">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <p class="hero-tag mb-2">高齡照護需求評估與建議系統</p>
+        <h1 class="hero-title fw-bold mb-3">
+          幫家屬與照顧者，<br>
+          快速看懂長者的照護需求。
+        </h1>
+        <p class="hero-lead text-muted mb-4">
+          透過簡單的問卷與情境描述，CareGuide 會以規則式評分模型計算照護需求等級，
+          並結合生成式 AI 提供白話建議與個案摘要報告，協助你了解可能的照護方向。
+        </p>
+        <div class="d-flex gap-2">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('assessment') }}">開始評估</a>
+          <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('about') }}">了解系統</a>
+        </div>
+        <p class="text-muted small mt-3 mb-0">
+          約 5 分鐘完成。本系統不取代正式長照評估或醫療診斷。
+        </p>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-card shadow-sm p-4">
+          <h6 class="text-muted mb-3">CareGuide 可以協助你：</h6>
+          <ul class="hero-list mb-0">
+            <li>初步判斷長者照護需求等級</li>
+            <li>找出主要照護風險因素</li>
+            <li>產生個人化照護建議</li>
+            <li>輸出可閱讀、可複製的個案報告</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">使用流程</h2>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="step-card h-100 p-4 text-center">
+          <div class="step-num">1</div>
+          <h5 class="mt-3">填寫問卷</h5>
+          <p class="text-muted small mb-0">日常生活、健康、家庭照顧等面向。</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card h-100 p-4 text-center">
+          <div class="step-num">2</div>
+          <h5 class="mt-3">系統評分</h5>
+          <p class="text-muted small mb-0">100 分制規則模型計算照護需求等級。</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card h-100 p-4 text-center">
+          <div class="step-num">3</div>
+          <h5 class="mt-3">AI 建議</h5>
+          <p class="text-muted small mb-0">生成式 AI 提供白話、個人化建議。</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="step-card h-100 p-4 text-center">
+          <div class="step-num">4</div>
+          <h5 class="mt-3">查看報告</h5>
+          <p class="text-muted small mb-0">整合摘要可複製或保存。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-5">
+  <div class="container">
+    <h2 class="section-title text-center mb-4">適合的使用對象</h2>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="info-card h-100 p-4">
+          <h5>家屬</h5>
+          <p class="text-muted small mb-0">想了解長輩可能的照護需求，作為和家人討論或準備正式評估的參考。</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card h-100 p-4">
+          <h5>照顧者</h5>
+          <p class="text-muted small mb-0">想盤點目前的照護負擔，並了解可使用的喘息或社區資源。</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="info-card h-100 p-4">
+          <h5>學習者與初步參考</h5>
+          <p class="text-muted small mb-0">照護相關學習者或社福單位人員，可作為案例理解與課程使用。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

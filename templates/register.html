@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}註冊｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="auth-card panel p-4 p-md-5">
+          <h3 class="fw-bold mb-1">建立 CareGuide 帳號</h3>
+          <p class="text-muted small mb-4">註冊免費，可保存你建立的評估紀錄。</p>
+
+          <form method="post" action="{{ url_for('register') }}" novalidate>
+            <div class="mb-3">
+              <label class="form-label">帳號</label>
+              <input type="text" name="username" class="form-control"
+                     value="{{ form.username or '' }}"
+                     pattern="[A-Za-z0-9_]{3,30}"
+                     required autofocus>
+              <div class="form-text">3–30 字元，限英數字或底線。</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">顯示名稱（選填）</label>
+              <input type="text" name="display_name" class="form-control"
+                     value="{{ form.display_name or '' }}"
+                     maxlength="40">
+              <div class="form-text">在系統中顯示的名稱，未填則使用帳號。</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">密碼</label>
+              <input type="password" name="password" class="form-control" minlength="6" required>
+              <div class="form-text">至少 6 個字元。</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">確認密碼</label>
+              <input type="password" name="confirm_password" class="form-control" minlength="6" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">建立帳號</button>
+          </form>
+
+          <p class="text-muted small text-center mt-4 mb-0">
+            已經有帳號了？<a href="{{ url_for('login') }}">前往登入</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

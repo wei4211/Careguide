@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}評估結果｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="py-4 bg-light">
+  <div class="container">
+    <p class="text-muted small mb-1">CareGuide 評估結果 #{{ record.id }}</p>
+    <h2 class="fw-bold mb-0">照護需求初步評估報告</h2>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+
+    <!-- 等級總覽 -->
+    <div class="result-hero level-{{ record.risk_level_code }} p-4 mb-4">
+      <div class="row align-items-center g-3">
+        <div class="col-md-7">
+          <p class="text-muted small mb-1">照護需求等級</p>
+          <h3 class="fw-bold mb-2">{{ record.risk_level }}</h3>
+          <p class="mb-0 text-muted">{{ record.level_description }}</p>
+        </div>
+        <div class="col-md-5">
+          <div class="text-md-end">
+            <p class="text-muted small mb-1">總分</p>
+            <div class="score-big">
+              <span class="score-num">{{ record.total_score }}</span>
+              <span class="score-max">/ 100</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- 各面向分數 -->
+      <div class="col-lg-6">
+        <div class="panel p-4 h-100">
+          <h5 class="panel-title">各面向分數</h5>
+
+          {% set bars = [
+            ('日常生活能力 ADL', record.adl_score, 30),
+            ('工具性日常生活能力 IADL', record.iadl_score, 20),
+            ('健康與安全風險', record.health_score, 20),
+            ('家庭照顧支持', record.family_score, 20),
+            ('照顧者壓力', record.caregiver_score, 10),
+          ] %}
+
+          {% for label, value, max_val in bars %}
+          <div class="score-bar mb-3">
+            <div class="d-flex justify-content-between small mb-1">
+              <span>{{ label }}</span>
+              <span class="text-muted">{{ value }} / {{ max_val }}</span>
+            </div>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar bg-primary"
+                   role="progressbar"
+                   style="width: {{ (value / max_val * 100) | round(1) }}%;">
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- 主要風險因素 -->
+      <div class="col-lg-6">
+        <div class="panel p-4 h-100">
+          <h5 class="panel-title">主要風險因素</h5>
+          {% if record.risk_factors %}
+            <ol class="risk-list mb-0">
+              {% for factor in record.risk_factors %}
+                <li>{{ factor }}</li>
+              {% endfor %}
+            </ol>
+          {% else %}
+            <p class="text-muted mb-0">目前未偵測到顯著的主要風險因素，可持續觀察長者狀況。</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- 個案基本資料 -->
+    <div class="panel p-4 mt-4">
+      <h5 class="panel-title">個案資料摘要</h5>
+      <div class="row g-3">
+        <div class="col-md-3"><span class="text-muted small">年齡</span><div>{{ record.age or '未填' }} 歲</div></div>
+        <div class="col-md-3"><span class="text-muted small">性別</span><div>{{ record.gender or '未填' }}</div></div>
+        <div class="col-md-3"><span class="text-muted small">居住狀況</span><div>{{ record.living_status_label }}</div></div>
+        <div class="col-md-3"><span class="text-muted small">主要照顧者</span><div>{{ record.caregiver_label }}</div></div>
+        {% if record.user_description %}
+        <div class="col-12">
+          <span class="text-muted small">補充描述</span>
+          <div class="bg-light rounded p-3 mt-1">{{ record.user_description }}</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- AI 建議 -->
+    <div class="panel p-4 mt-4">
+      <div class="d-flex justify-content-between align-items-center panel-title">
+        <h5 class="m-0 p-0 border-0">AI 照護建議</h5>
+        <form id="regenerateForm" method="post"
+              action="{{ url_for('regenerate_advice', assessment_id=record.id) }}"
+              class="m-0">
+          <button type="submit" class="btn btn-sm btn-outline-primary" id="regenerateBtn">
+            ↻ 重新產生
+          </button>
+        </form>
+      </div>
+      <div class="ai-advice">{{ record.ai_advice | markdown }}</div>
+    </div>
+
+    <!-- 操作按鈕 -->
+    <div class="d-flex justify-content-between mt-4 flex-wrap gap-2">
+      <a class="btn btn-outline-secondary" href="{{ url_for('assessment') }}">重新填寫</a>
+      <a class="btn btn-primary" href="{{ url_for('report', assessment_id=record.id) }}">產生個案報告</a>
+    </div>
+
+    <p class="text-muted small mt-4 mb-0">
+      ※ 本系統僅提供初步照護需求評估，不取代正式長照評估或醫療診斷。
+      如有需要請撥打 1966 長照專線或聯繫所在地長期照顧管理中心。
+    </p>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const regenerateForm = document.getElementById('regenerateForm');
+  if (regenerateForm) {
+    regenerateForm.addEventListener('submit', () => {
+      const btn = document.getElementById('regenerateBtn');
+      btn.disabled = true;
+      btn.textContent = '產生中…';
+      const overlay = document.getElementById('loadingOverlay');
+      if (overlay) {
+        document.getElementById('loadingTitle').textContent = '正在重新產生 AI 建議…';
+        document.getElementById('loadingHint').textContent = '通常需要 5–15 秒，請稍候。';
+        overlay.hidden = false;
+      }
+    });
+  }
+</script>
+{% endblock %}

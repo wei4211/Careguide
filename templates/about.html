@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}關於系統｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="py-4 bg-light">
+  <div class="container">
+    <h2 class="fw-bold mb-1">關於 CareGuide</h2>
+    <p class="text-muted mb-0">高齡照護需求評估與建議系統</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="panel p-4 mb-4">
+          <h5 class="panel-title">系統定位</h5>
+          <p class="mb-0">
+            CareGuide 是一套高齡照護需求評估與建議系統，協助家屬、照顧者或一般使用者，
+            透過問卷與情境描述，初步了解長者目前可能面臨的照護需求與風險。
+            本系統不取代正式長照評估，也不進行醫療診斷，作為高齡照護需求初步篩檢與建議的輔助工具。
+          </p>
+        </div>
+
+        <div class="panel p-4 mb-4">
+          <h5 class="panel-title">評分方式</h5>
+          <p>系統採用 100 分制規則式評分模型，分為五個面向：</p>
+          <ul class="mb-3">
+            <li>日常生活能力 ADL：30 分</li>
+            <li>工具性日常生活能力 IADL：20 分</li>
+            <li>健康與安全風險:20 分</li>
+            <li>家庭照顧支持:20 分</li>
+            <li>照顧者壓力:10 分</li>
+          </ul>
+          <p class="mb-0">
+            根據總分對應四個照護需求等級：低度（0–24）、中度（25–49）、高度（50–74）、極高度（75–100）。
+          </p>
+        </div>
+
+        <div class="panel p-4 mb-4">
+          <h5 class="panel-title">技術架構</h5>
+          <ul class="mb-0">
+            <li>前端：HTML、CSS、Bootstrap、JavaScript</li>
+            <li>後端：Python Flask、SQLite</li>
+            <li>AI：Gemini API 產生白話照護建議與個案摘要</li>
+            <li>規則式評分：可解釋的 ADL/IADL/健康/家庭/照顧者壓力面向計算</li>
+          </ul>
+        </div>
+
+        <div class="panel p-4">
+          <h5 class="panel-title">系統限制與免責聲明</h5>
+          <ol class="mb-0">
+            <li>CareGuide 僅提供初步照護需求評估，不代表正式長照資格判定。</li>
+            <li>本系統不能取代醫師診斷、社工評估或長照管理中心的正式評估。</li>
+            <li>第一版採用規則式評分，分數設計以初步篩檢與系統展示為主，尚未以大規模真實資料驗證。</li>
+            <li>生成式 AI 建議會受到使用者輸入內容影響,可能存在不完整或不精確之情形。</li>
+            <li>若長者已有急性醫療問題、嚴重跌倒、意識混亂或安全疑慮，應優先尋求醫療或專業協助。</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="panel p-4 mb-4">
+          <h6 class="text-muted mb-3">相關資源</h6>
+          <ul class="list-unstyled mb-0 small">
+            <li class="mb-2">📞 1966 長照服務專線</li>
+            <li class="mb-2">🏥 各縣市長期照顧管理中心</li>
+            <li class="mb-2">🔗 衛福部長期照顧司</li>
+          </ul>
+        </div>
+
+        <div class="panel p-4">
+          <h6 class="text-muted mb-3">開始評估</h6>
+          <p class="small text-muted">填寫問卷約 5 分鐘，立刻取得初步建議。</p>
+          <a class="btn btn-primary w-100" href="{{ url_for('assessment') }}">開始評估</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

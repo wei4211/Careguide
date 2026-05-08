@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.venv
+venv
+.env
+.python-version
+
+# 本機資料
+database/*.db
+*.log
+.DS_Store
+
+# 文件（不需要進 image）
+*.md
+DEPLOY_RENDER.md
+
+# Docker
+Dockerfile
+.dockerignore
+
+# IDE
+.vscode
+.idea

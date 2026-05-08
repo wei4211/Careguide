@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}登入｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-lg-5">
+        <div class="auth-card panel p-4 p-md-5">
+          <h3 class="fw-bold mb-1">登入 CareGuide</h3>
+          <p class="text-muted small mb-4">登入後即可開始評估、查看歷史紀錄。</p>
+
+          <form method="post" action="{{ url_for('login') }}" novalidate>
+            {% if request.args.get('next') %}
+              <input type="hidden" name="next" value="{{ request.args.get('next') }}">
+            {% endif %}
+
+            <div class="mb-3">
+              <label class="form-label">帳號</label>
+              <input type="text" name="username" class="form-control"
+                     value="{{ form.username or '' }}" required autofocus>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">密碼</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">登入</button>
+          </form>
+
+          <p class="text-muted small text-center mt-4 mb-0">
+            還沒有帳號？<a href="{{ url_for('register') }}">立即註冊</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

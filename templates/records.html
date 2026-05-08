@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}歷史紀錄｜CareGuide{% endblock %}
+
+{% block content %}
+<section class="py-4 bg-light">
+  <div class="container">
+    <h2 class="fw-bold mb-1">歷史評估紀錄</h2>
+    <p class="text-muted mb-0">顯示最近 50 筆評估資料。</p>
+  </div>
+</section>
+
+<section class="py-4">
+  <div class="container">
+    {% if records %}
+    <div class="panel p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle records-table">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center" style="width:60px;">#</th>
+              <th>時間</th>
+              <th>年齡</th>
+              <th>居住狀況</th>
+              <th>總分</th>
+              <th>等級</th>
+              <th class="text-end" style="width:160px;">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in records %}
+            <tr>
+              <td class="text-center text-muted">{{ loop.index }}</td>
+              <td class="small text-muted">{{ r.created_at }}</td>
+              <td>{{ r.age or '—' }}</td>
+              <td>
+                {% if r.living_status == 'with_family' %}與家人同住
+                {% elif r.living_status == 'alone_daytime' %}白天常獨處
+                {% elif r.living_status == 'alone' %}獨居
+                {% else %}—{% endif %}
+              </td>
+              <td><strong>{{ r.total_score }}</strong> / 100</td>
+              <td>
+                <span class="level-pill level-{{ r.risk_level_code }}">{{ r.risk_level }}</span>
+              </td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-outline-primary" href="{{ url_for('result', assessment_id=r.id) }}">查看</a>
+                <button type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        data-bs-toggle="modal"
+                        data-bs-target="#deleteModal"
+                        data-id="{{ r.id }}"
+                        data-time="{{ r.created_at }}">刪除</button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 刪除確認 -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">確認刪除評估紀錄</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            這份評估紀錄將會永久刪除，無法復原。
+            <p class="text-muted small mt-2 mb-0" id="deleteHint"></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">取消</button>
+            <form id="deleteForm" method="post" class="m-0">
+              <button type="submit" class="btn btn-danger">確定刪除</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="panel p-5 text-center">
+      <p class="text-muted mb-3">目前尚無任何評估紀錄。</p>
+      <a class="btn btn-primary" href="{{ url_for('assessment') }}">開始第一次評估</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const deleteModal = document.getElementById('deleteModal');
+  if (deleteModal) {
+    deleteModal.addEventListener('show.bs.modal', (event) => {
+      const btn = event.relatedTarget;
+      const id = btn.getAttribute('data-id');
+      const time = btn.getAttribute('data-time');
+      document.getElementById('deleteForm').action = `/records/${id}/delete`;
+      document.getElementById('deleteHint').textContent = `紀錄編號 #${id}　|　時間：${time}`;
+    });
+  }
+</script>
+{% endblock %}
